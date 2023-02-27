@@ -1,3 +1,8 @@
+
+# This repo is deprecated!
+
+Use canshare-poc1 instead. I accidentally added a large file which mucked up the ability to push to git. Creating a new repo was the easiest way to recover as there wasn't much histroy to preserve...
+
 ## To start for development
 
 * cd cs-customOps & execute docker compose up in this folder. Will start mongo & hapi
