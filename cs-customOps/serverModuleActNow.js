@@ -8,6 +8,7 @@ function setup(app,serverBase) {
     
     app.post("/([$])acceptActNow",async function(req,res){
 
+        console.log('headers:',req.headers)
         let bundle = req.body
         let metrics = {}
         metrics.start = new Date()
@@ -17,16 +18,17 @@ function setup(app,serverBase) {
         if (lstIssues.length > 0) {
             
             let oo = utilModule.makeOO(lstIssues)
-            utilModule.logger("actnow",{content:bundle,oo:oo})
+            utilModule.logger("actnow",{content:bundle,outcome:oo,headers:req.headers,status:400,metrics:metrics})
             res.status("400").json(oo)
             return
         }
 
         //todo perform profile validation - ? optional
 
-        //POST the bundle to the root of the FHIR server (it's a transaction) and return
+        //POST the bundle to the root of the FHIR server (it's a transaction) and return the HTTP
+        //will also do the logging
         metrics.end = new Date()
-        utilModule.postBundleToServer(bundle,metrics,res,"actnow")
+        utilModule.postBundleToServer(bundle,metrics,res,"actnow",req)
 
     /*
         let response

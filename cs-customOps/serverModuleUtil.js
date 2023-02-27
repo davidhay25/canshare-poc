@@ -27,14 +27,17 @@ function makeOO(lstIssues) {
     
 }
 
-async function postBundleToServer(bundle,metrics,res,collectionName) {
+async function postBundleToServer(bundle,metrics,res,collectionName,req) {
     let response
     try {
     
         response = await axios.post(serverBase,bundle)
         let oo = response.data  //if successful, will return an oo
-        
-        logger(collectionName,{content:bundle,oo:response.data})
+        let log = {content:bundle,outcome:response.data,headers: req.headers}
+        log.status = res.status
+        metrics.end = new Date()
+        log.metrics = metrics
+        logger(collectionName,log)
         res.json(oo)
 
     } catch (ex) {
@@ -47,6 +50,7 @@ async function postBundleToServer(bundle,metrics,res,collectionName) {
             let msg = `Server not contactable. Url: ${serverBase} http code:${ex.code}`
              oo = makeOO([{msg:msg,severity:'error'}])
         }
+
 
         logger("actnow",{content:bundle,oo:oo})
         res.status(500).json(oo)
@@ -66,9 +70,19 @@ function level1Validate(bundle) {
 //for now, send the msg to the mongoDb log database.
 //todo eventually, this will use the fluentd container to scrape from stdout...
 //if there's an error, just log it to the console for now...
+//pass in the request object so er can get headers
+
 function logger(collection,msg) {
-    let obj = {msg:msg}
-    database.collection(collection).insertOne(obj, function (err, result) {
+    //let obj = {msg:msg}
+    //let headers = req.headers
+    //obj.headers = req.headers
+    msg.date = new Date()
+    if (msg.headers && msg.headers['x-sender']) {
+        msg.sender = msg.headers['x-sender']
+    }
+
+
+    database.collection(collection).insertOne(msg, function (err, result) {
         if (err) {
             console.log('Error updating log ',err)
         } 

@@ -1,16 +1,8 @@
 version: '3.7'
+
+# run the support containers only
 services:
-  cs-ops:
-    # image: cs-ops
-    build: .
-    init: true
-    ports:
-      - 9300:9300
-    environment:
-      - LOGDB=mongo-log
-      - SERVERBASE=http://hapi-data:8080/fhir/
-    networks:
-      - poc-net
+
   mongo-log:
     image: mongo:latest
     networks:

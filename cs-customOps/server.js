@@ -10,7 +10,7 @@ console.log(`Log database from env is ${process.env.LOGDB}`)
 let serverBase = process.env.SERVERBASE
 
 
-let fs = require('fs')
+//let fs = require('fs')
 let http = require('http');
 
 const requestModule = require("./serverModuleRequest.js")
@@ -34,4 +34,4 @@ actnowModule.setup(app,serverBase)     //$acceptActNow
 
 
 server = http.createServer(app).listen(port);
-console.log("Custom opertions server listening on port " + port)
+console.log("Custom operations server listening on port " + port)
