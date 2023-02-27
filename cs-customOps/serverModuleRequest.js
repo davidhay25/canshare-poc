@@ -9,6 +9,9 @@ function setup(app) {
     app.post("/([$])acceptRequest",async function(req,res){
 
         let bundle = req.body
+        let metrics = {}
+        metrics.start = new Date()
+
 
         utilModule.logger("request",{content:bundle})
 
@@ -27,8 +30,11 @@ function setup(app) {
         //add a Communication to the bundle for the notification if there is a SR with a performer
         addCommunication(bundle)
         //POST the bundle to the FHIR server
+        metrics.end = new Date()
+        utilModule.postBundleToServer(bundle,metrics,res,"request",req)
 
-        res.json({})
+
+        //res.json({})
 
     })
 

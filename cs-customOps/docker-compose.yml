@@ -7,7 +7,7 @@ services:
     image: mongo:latest
     networks:
       - poc-net
-    ports:
+    ports:  
       - 27017:27017
   hapi-data:
     image: hapiproject/hapi
